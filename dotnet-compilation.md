@@ -25,6 +25,9 @@ dotnet new sln
 Библиотека классов
 Решение
 
+Вывести список возможных вариантов на данной системе
+dotnet new list
+
 ---
 ### Добавление пакетов
 dotnet add package Figgle
@@ -62,8 +65,7 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 Флаг, который добавляет опцию генерации исполняемого файла, подогнанного под конкретную архитектуру, на которой выполняется сборка
 --use-current-runtime true
 
-
-
-
+[Добавление ссылок на другие проекты](https://learn.microsoft.com/ru-ru/dotnet/core/tools/dotnet-add-reference)
 dotnet add ./builder/ reference ./libs/utils/
-
+dotnet list ./builder/ reference
+dotnet remove ./builder/ reference
