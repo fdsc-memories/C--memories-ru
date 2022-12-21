@@ -28,7 +28,6 @@ class Program
         // (содержат подстановочные шаблоны в фигурных скобках)
         // Обратим внимание на то, что кавычки в фигурных скобках не нужно экранировать обратными слешами
         Console.WriteLine($"Enum1.Denied={Enum1.Denied}");
-        Console.WriteLine($"G: {Enum1.Denied.ToString("G")}, F: {Enum1.Denied.ToString("F")}, D: {Enum1.Denied.ToString("D")}, X: {Enum1.Denied.ToString("X")}");
 
         // Теперь используем строки с тройными кавычками """
         // Количество знаков доллара "$" определяет кратность фигурных скобок.
@@ -37,18 +36,76 @@ class Program
         // Переводы строки после открытия кавычек и перед закрытием в строку не включаются
         Console.WriteLine
         (
+            $"""
+            G: {Enum1.Denied.ToString("G")},
+            F: {Enum1.Denied.ToString("F")},
+            D: {Enum1.Denied.ToString("D")},
+            X: {Enum1.Denied.ToString("X")}
+
+            """
+        );
+        
+        /*
+        Строки могут быть с заданными преобразованиями
+        {<interpolationExpression>[,<alignment>][:<formatString>]}
+
+        // Если нужно преобразовывать культуры, это делается отдельно
+        // FormattableString message = $"The speed of light is {speedOfLight:N3} km/s.";
+        // var specificCulture = System.Globalization.CultureInfo.GetCultureInfo("en-IN");
+        // message.ToString(specificCulture);
+
+        {obj, -10} - означает, что значение obj выравнивается по левому краю и имеет не менее 10-ти знаков в ширину
+        +10 - означало бы, что значение выравнивается по правому краю
+        */
+
+        Console.WriteLine
+        (
             $$"""
-            Enum1.Denied={{Enum1_String[(int) Enum1.Denied]}}
-            Enum1.Denied={{Enum1_Dict[Enum1.Denied.ToString()]}}
+            Enum1.Denied={{Enum1_String[(int) Enum1.Denied], -12}} |
+            Enum1.Denied={{Enum1_Dict[Enum1.Denied.ToString()], 12}} |
+
             """
         );
 
-        // Вывод:
-        // Enum1.Denied=Denied
-        // G: Denied, F: Denied, D: 2, X: 00000002
-        // Enum1.Denied=Запрещено
-        // Enum1.Denied=Запрещено
-        
+        /* Вывод:
+        Enum1.Denied=Denied
+        G: Denied,
+        F: Denied,
+        D: 2,
+        X: 00000002
+
+        Enum1.Denied=Запрещено    |
+        Enum1.Denied=   Запрещено |
+
+        */
+
+        /*
+            Экранирование интерполяции
+            https://learn.microsoft.com/ru-ru/dotnet/standard/base-types/composite-formatting#escaping-braces
+            {{ - это экранированная фигурная скобка (только если стоит один знак доллара перед скобкой)
+        */
+        Console.WriteLine($"Одинарная скобка {{");
+        // С тройными кавычками это не сработает это не сработает
+        // Console.WriteLine($$"""Одинарная скобка {{{{""");
+
+        // Если необходимо отобразить число в фигурных скобках, то это может быть проблематично
+        // т.к. скобки могут интерпретироваться и искажать формат. Вместо этого может быть применена схема
+        Console.WriteLine($"Хотим отобразить {125} в фигурных скобках: {{2}} {{{2:D}}} {{{{{2:D}}}}}", "{", "}", 125);
+        Console.WriteLine("Число в скобках {0}{2:D}{1}", "{", "}", 125);
+        Console.WriteLine();
+        /* Вывод:
+            Одинарная скобка {
+            Хотим отобразить число 125 в фигурных скобках: 125 125 {2}
+            Число в скобках {125}
+
+            Обращаем внимание на то, что нам не удаётся отобразить фигурные скобки вокруг числа
+            {125} интерпретируются как код C#, возвращающий число 125
+            {{2}} интерпретируется как {2} и поступают в функцию WriteLine, которая интерпретирует
+            {2} как указание на 3-ий аргумент после строки
+            {{{2:D}}} интерпретируется как { {2:D} }
+
+        */
+
         // Перечисление допустимых имён типа Enum
         string[] names = Enum.GetNames(typeof(Enum1));
         Console.WriteLine("Члены перечисления {0}:", typeof(Enum1).Name);
@@ -59,7 +116,7 @@ class Program
             // Console.WriteLine("   {0} {1} = {0:D} [{Enum1_Dict[Enum1.Denied.ToString()]}]", name, status);
             // \t \n и т.п. - стандартные подстановочные символы: табуляция, новая строка
             // \u4f60 - так можно кодировать символы Unicode
-            // Подстановки {0} используются без доллара. {0} - первый аргумент (в данном случае, name), {1} - второй аргумент функции (status)
+            // Подстановки {0} используются и без доллара. {0} - первый аргумент (в данном случае, name), {1} - второй аргумент функции (status)
             Console.WriteLine("   \"{0}\"\t= {1}\t= {1:D}\t= [{2}]", name, status, Enum1_Dict2[status]);
         }
         /* Вывод:
