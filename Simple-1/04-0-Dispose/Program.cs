@@ -24,6 +24,9 @@ for (int i = 0; i < 100; i++)
     GC.WaitForPendingFinalizers();
 }
 
+// Чтобы помочь scForget удалится, можно лишь вручную вызвать этот метод
+// scForget.Dispose();
+
 
 // Класс без наследования. Просто реализуем интерфейс
 sealed class SimpleSealedClass: IDisposable
@@ -60,7 +63,8 @@ class SimpleClass: IDisposable
     public bool disposed {get; private set;} = false;
 
     // Если disposing == false, значит мы забыли вызвать Dispose
-    protected void Dispose(bool fromDestructor = true)
+    // Обратим внимание, этот метод - виртуальный. Его уже можно переопределять в потомках
+    protected virtual void Dispose(bool fromDestructor = true)
     {
         if (disposed)
             return;
@@ -74,6 +78,7 @@ class SimpleClass: IDisposable
     // Если хотим, вставляем проверку в деструктор
     ~SimpleClass()
     {
+        Console.WriteLine("~SimpleClass()");
         Dispose();
     }
 }
