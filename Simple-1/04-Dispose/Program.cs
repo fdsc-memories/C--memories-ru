@@ -6,6 +6,9 @@
     например, делать текст красным. А затем будет всё возвращать назад
 */
 
+// Это работающая защита, но неудобная
+using var exitEvent = new ExitEventClass();
+
 Thread.GetDomain().ProcessExit += (o, e) => {};
 
 
@@ -35,18 +38,30 @@ errOpts = null;
 GC.Collect();
 GC.WaitForPendingFinalizers();
 
-Console.WriteLine("Снова обычный текст, т.к. наша защита восстановила его");
+Console.WriteLine("Снова ошибочно красный текст, хотя всё должно было уже сработать");
+// Даже после конца приложения, Dispose не вызовется
+
+
+// Для того, чтобы это работало, нужно либо подписаться на Thread.GetDomain().ProcessExit, как выше, только с удалением объектов
+// Либо сделать и вставить вызов своего события, которое вручную будет вызываться в конце программы
+// ProcessExit ограничен на выполнение временем (стандартно - 2 секунды), так что лучше его не использовать
+Thread.GetDomain().ProcessExit += (o, e) =>
+{
+    Console.WriteLine("Теперь строка должна быть нормального цвета");
+};
 
 
 // В этом классе мы сохраним первоначальный цвет консоли: текста и фона
-public abstract class ConsoleOptions: IDisposable
+public abstract class ConsoleOptions: IDisposabe_checkOnExit
 {
     public ConsoleColor InitialBackgroundColor;
     public ConsoleColor InitialForegroundColor;
 
-    // Мы будем использовать класс SafeHandle для того, чтобы просто гарантировать вызов деструктора в .NET
+    // Вот это тоже не будет работать
+    // Мы будем использовать класс SafeHandle для того, чтобы гарантировать вызов деструктора в .NET
     // Непосредственно хранить и освобождать дескриптор нам не нужно
     // Мы его используем именно потому, что он хорошо позволяет нам гарантированно освобождать объект
+    // Однако, освобождать объект реально он тоже не будет
     class SH : System.Runtime.InteropServices.SafeHandle
     {
         // Здесь будем хранить объект, который мы хотим обезопасить
@@ -73,6 +88,9 @@ public abstract class ConsoleOptions: IDisposable
 
     public ConsoleOptions()
     {
+        // Вот это наша основная работающая защита. К сожалению, её надо вставлять вручную
+        ExitEventClass.addObject(this);
+
         InitialBackgroundColor = Console.BackgroundColor;
         InitialForegroundColor = Console.ForegroundColor;
 
@@ -87,20 +105,20 @@ public abstract class ConsoleOptions: IDisposable
     }
 
     // Здесь мы будем восстанавливать первоначальный цвет
-    public virtual void Disposing(bool fromDestructor = false)
+    public virtual void Disposing(bool fromDestructor = true)
     {
         // Чтобы было понятно, когда кто вызывается, пишем отладочный вывод
         Console.WriteLine("Disposing for class " + this.GetType());
 
         // Если функция случайно вызвана повторно, то просто ничего не будем делать
         // Иногда, в таких случаях, стоит вызывать исключения.
-        if (Disposed)
+        if (disposed)
             return;
 
         Console.BackgroundColor = InitialBackgroundColor;
         Console.ForegroundColor = InitialForegroundColor;
 
-        Disposed = true;
+        disposed = true;
         // На этот объект мы больше не будем вызывать деструктор, т.к. уже всё очистили
         // Этот вызов не обязателен
         GC.SuppressFinalize(this);
@@ -110,6 +128,9 @@ public abstract class ConsoleOptions: IDisposable
         {
             // В данном случае, просто сообщим на консоль об этом
             Console.Error.WriteLine("ERROR: IDisposable.Dispose() was not called");
+
+            // Здесь мы вызовем исключение, чтобы
+            throw new Exception();
         }
     }
 
@@ -129,10 +150,10 @@ public abstract class ConsoleOptions: IDisposable
     // То есть obj.Dispose() вызвать не получится
     void IDisposable.Dispose()
     {
-        Disposing();
+        Disposing(false);
     }
 
-    protected bool Disposed = false;
+    public bool disposed {get; protected set;} = false;
 
     // Давайте сделаем защиту от забывания вызова IDisposable.Dispose()
     // Для этого определим деструктор
@@ -176,4 +197,87 @@ public class RedConsoleOptions: ConsoleOptions
 public class GreenConsoleOptions: ConsoleOptions
 {
     public GreenConsoleOptions() => Console.ForegroundColor = ConsoleColor.Green;
+}
+
+
+interface IDisposabe_checkOnExit: IDisposable
+{
+    public bool disposed {get;}
+}
+
+class ExitEventClass : IDisposable
+{
+    protected object sync = new Object();
+
+    protected static ExitEventClass? ExitEventObject = null;
+    public ExitEventClass()
+    {
+        lock (sync)
+        {
+            if (ExitEventObject != null)
+                throw new InvalidOperationException();
+
+            onExit += (o, a) => {};
+            ExitEventObject = this;
+        }
+    }
+
+    public bool disposed { get; private set; } = false;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                // TODO: освободить управляемое состояние (управляемые объекты)
+            }
+
+            onExit(this, new EventArgs());
+
+            Console.WriteLine("ExitEventClass.Dispose");
+
+            // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения
+            // TODO: установить значение NULL для больших полей
+            disposed = true;
+        }
+    }
+
+    // // TODO: переопределить метод завершения, только если "Dispose(bool disposing)" содержит код для освобождения неуправляемых ресурсов
+    // ~ExitEventClass()
+    // {
+    //     // Не изменяйте этот код. Разместите код очистки в методе "Dispose(bool disposing)".
+    //     Dispose(disposing: false);
+    // }
+
+    protected event EventHandler onExit;
+
+    public static void addObject(IDisposabe_checkOnExit obj)
+    {
+        if (ExitEventObject == null)
+            throw new ArgumentNullException("call 'using var exitEvent = new ExitEventClass();' before in the main function");
+
+        var st = new System.Diagnostics.StackTrace(true);
+
+        ExitEventObject.onExit += (o, e) =>
+        {
+            try
+            {
+                if (!obj.disposed)
+                {
+                    obj.Dispose();
+                    Console.Error.WriteLine("ExitEventClass.onExit: error for object \n" + st);
+                }
+            }
+            catch
+            {}
+        };
+    }
+
+    public void Dispose()
+    {
+        // Не изменяйте этот код. Разместите код очистки в методе "Dispose(bool disposing)".
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }
