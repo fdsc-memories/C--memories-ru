@@ -3,6 +3,12 @@
 @dotnet
 [Конкретная справка по утилите dotnet](https://learn.microsoft.com/ru-ru/dotnet/core/tools/dotnet)
 
+[Справка по xml-файлам ms-build (в т.ч. Project)](https://learn.microsoft.com/ru-ru/visualstudio/msbuild/msbuild-project-file-schema-reference)
+[Справка по свойствам ms-build внутри проекта](https://learn.microsoft.com/ru-ru/dotnet/core/project-sdk/msbuild-props#implicitusings)
+
+Параметр Nullable - смотреть в C-sharp-comments.md
+
+
 ---
 ### Вывести список установленных пакетов .NET
 Для SDK (пакеты для разработки)

@@ -55,6 +55,9 @@ class Program
             {
                 CustomEvent2_copy(new object(), new CustomEventArgs("Event 2"));
             }
+
+            // Это более краткий пример вызова, полностью аналогичный вышеприведённому
+            this.CustomEvent2?.Invoke(new object(), new CustomEventArgs("Event 2 from Invoke"));
         }
 
         public void RaiseEvent3()
@@ -103,6 +106,7 @@ class Program
         /*
             Программа выдаёт следующее:
                 CustomEvent3_Handler: Event 2
+                CustomEvent3_Handler: Event 2 from Invoke
                 CustomEvent3_Handler: Event 3
 
             Программа вызывает обработчик EmptyHandlers.CustomEvent3_Handler дважды из функций RaiseEvent2 и RaiseEvent3
