@@ -22,13 +22,27 @@ class Program
     // static int Main(string[] args)
     static void Main(string[] args)
     {
+        // Примеры интерполяции строк
+
         // Строки, начинающиеся с $ являются интерполируемыми
         // (содержат подстановочные шаблоны в фигурных скобках)
         // Обратим внимание на то, что кавычки в фигурных скобках не нужно экранировать обратными слешами
         Console.WriteLine($"Enum1.Denied={Enum1.Denied}");
         Console.WriteLine($"G: {Enum1.Denied.ToString("G")}, F: {Enum1.Denied.ToString("F")}, D: {Enum1.Denied.ToString("D")}, X: {Enum1.Denied.ToString("X")}");
-        Console.WriteLine($"Enum1.Denied={Enum1_String[(int) Enum1.Denied]}");
-        Console.WriteLine($"Enum1.Denied={Enum1_Dict[Enum1.Denied.ToString()]}");
+
+        // Теперь используем строки с тройными кавычками """
+        // Количество знаков доллара "$" определяет кратность фигурных скобок.
+        // Для двух долларов $$ скобки будут двойные
+        // Пробелы, выравнивающие строку, исключаются компилятором из состава строки
+        // Переводы строки после открытия кавычек и перед закрытием в строку не включаются
+        Console.WriteLine
+        (
+            $$"""
+            Enum1.Denied={{Enum1_String[(int) Enum1.Denied]}}
+            Enum1.Denied={{Enum1_Dict[Enum1.Denied.ToString()]}}
+            """
+        );
+
         // Вывод:
         // Enum1.Denied=Denied
         // G: Denied, F: Denied, D: 2, X: 00000002
