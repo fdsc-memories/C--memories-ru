@@ -20,6 +20,7 @@ var scForget = new SimpleClass();
 // В .NET не помогает даже многократный вызов сборщика мусора: деструкторы всё равно не вызываются
 for (int i = 0; i < 100; i++)
 {
+    var a = new byte[1024*1024];
     GC.Collect();
     GC.WaitForPendingFinalizers();
 }
@@ -76,6 +77,8 @@ class SimpleClass: IDisposable
     }
 
     // Если хотим, вставляем проверку в деструктор
+    // Однако в современной .NET это бессмысленно,
+    // т.к. деструкторы, похоже, вообще никогда не вызываются
     ~SimpleClass()
     {
         Console.WriteLine("~SimpleClass()");
