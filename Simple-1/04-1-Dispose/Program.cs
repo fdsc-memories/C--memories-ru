@@ -45,7 +45,6 @@ using (var opts = new GreenConsoleOptions())
 
 try
 {
-    // Символ подчёркивания можно использовать, если нам не нужна именованная переменная
     using var _ = new GreenConsoleOptions();
     Console.WriteLine("Зелёный текст 2");
 
