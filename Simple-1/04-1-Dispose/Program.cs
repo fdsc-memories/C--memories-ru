@@ -45,7 +45,8 @@ using (var opts = new GreenConsoleOptions())
 
 try
 {
-    using var opts2 = new GreenConsoleOptions();
+    // Символ подчёркивания можно использовать, если нам не нужна именованная переменная
+    using var _ = new GreenConsoleOptions();
     Console.WriteLine("Зелёный текст 2");
 
     // Здесь исключение не страшно: всё равно будет вызван Dispose
