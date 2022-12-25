@@ -1,3 +1,5 @@
+[Руководство по программирования](https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/)
+
 ### Новые возможности
 [Новые возможности C#-11](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-11)
 
