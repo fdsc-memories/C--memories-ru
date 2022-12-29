@@ -41,10 +41,12 @@ dotnet add package Figgle
 ### Использование dotnet sln для работы с решениями
 https://learn.microsoft.com/ru-ru/dotnet/core/tools/dotnet-sln
 
+Создать решение (*.sln)
 Перечислить все проекты
 Добавить проекты
 Удалить проекты
 
+dotnet new sln
 dotnet sln list
 dotnet sln add ./tests/exe/
 dotnet sln remove ./tests/exe/
