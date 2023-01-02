@@ -5,6 +5,8 @@
 
 [Справка по xml-файлам ms-build (в т.ч. Project)](https://learn.microsoft.com/ru-ru/visualstudio/msbuild/msbuild-project-file-schema-reference)
 [Справка по свойствам ms-build внутри проекта](https://learn.microsoft.com/ru-ru/dotnet/core/project-sdk/msbuild-props#implicitusings)
+[Справка по переменным msbuild](https://learn.microsoft.com/ru-ru/visualstudio/msbuild/msbuild-reserved-and-well-known-properties?view=vs-2022)
+[Целевые объекты msbuild; выполнение внешних команд](https://learn.microsoft.com/ru-ru/visualstudio/msbuild/msbuild-targets?view=vs-2022)
 
 Параметр Nullable - смотреть в C-sharp-comments.md
 
