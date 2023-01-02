@@ -75,6 +75,14 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 Флаг, который добавляет опцию генерации исполняемого файла, подогнанного под конкретную архитектуру, на которой выполняется сборка
 --use-current-runtime true
 
+#### Пример публикации в один файл без включения зависимостей
+dotnet publish --output ./build.dev -c Release --self-contained false --use-current-runtime true /p:PublishSingleFile=true
+
+Также может быть и дополнительная прекомпиляция
+dotnet publish --output ./build.dev -c Release --self-contained false --use-current-runtime true /p:PublishSingleFile=true -p:PublishReadyToRun=true
+
+
+
 [Добавление ссылок на другие проекты](https://learn.microsoft.com/ru-ru/dotnet/core/tools/dotnet-add-reference)
 dotnet add ./builder/ reference ./libs/utils/
 dotnet list ./builder/ reference
