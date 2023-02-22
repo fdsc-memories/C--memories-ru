@@ -63,10 +63,10 @@ dotnet sln add **/*/*.csproj
 
 ### Установка проектов
 Ссылки на справку
-[Общие сведения о размещении](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/deploy-with-cli
-[Усечение размера среды .NET, встроенного в dll](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/trimming/trim-self-contained
-[Список платформ, для которых возможна компиляция](https://learn.microsoft.com/ru-ru/dotnet/core/rid-catalog
-[Прекомпиляция вместо jit-компиляции](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/ready-to-run
+[Общие сведения о размещении](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/deploy-with-cli)
+[Усечение размера среды .NET, встроенного в dll](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/trimming/trim-self-contained)
+[Список платформ, для которых возможна компиляция](https://learn.microsoft.com/ru-ru/dotnet/core/rid-catalog)
+[Прекомпиляция вместо jit-компиляции](https://learn.microsoft.com/ru-ru/dotnet/core/deploying/ready-to-run)
 -p:PublishReadyToRun=true
 Параметр командной строки генерирует сборку в одном файле вместе с указанными зависимостями
 [/p:PublishSingleFile=true](https://github.com/dotnet/designs/blob/main/accepted/2020/single-file/design.md)
