@@ -1,5 +1,7 @@
 [Руководство по программирования](https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/)
 
+[Сторонний учебник по C#](https://metanit.com/sharp/tutorial/3.51.php)
+
 ### Новые возможности
 [Новые возможности C#-11](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-11)
 
