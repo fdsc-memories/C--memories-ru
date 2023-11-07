@@ -100,6 +100,12 @@ dotnet remove ./builder/ reference
     <ProjectReference Include="../../../../VinKekFish/src/main/4 utils/4 utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MyAssembly">
+      <HintPath>path\to\MyAssembly.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
