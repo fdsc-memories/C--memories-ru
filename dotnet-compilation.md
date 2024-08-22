@@ -83,7 +83,7 @@ dotnet publish --output ./build.dev -c Release --self-contained false --use-curr
 Также может быть и дополнительная прекомпиляция
 dotnet publish --output ./build.dev -c Release --self-contained false --use-current-runtime true /p:PublishSingleFile=true -p:PublishReadyToRun=true
 
-
+dotnet publish --output ./build.dev -c Release --self-contained false /p:PublishSingleFile=true -r linux-x64
 
 [Добавление ссылок на другие проекты](https://learn.microsoft.com/ru-ru/dotnet/core/tools/dotnet-add-reference)
 dotnet add ./builder/ reference ./libs/utils/
